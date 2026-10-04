@@ -1,0 +1,36 @@
+{% extends 'myapp/base.html' %}
+{% block title %}โปรไฟล์สมาชิก | Master Fitness{% endblock %}
+{% block content %}
+<section class="profile-heading">
+  <div><p class="eyebrow">MEMBER PROFILE / {{ member.member_code }}</p><h1>สวัสดี{% if member.nickname %} คุณ{{ member.nickname }}{% else %} {{ member.first_name }}{% endif %}</h1></div>
+  <span class="status-chip">สมาชิก</span>
+</section>
+<section class="profile-grid">
+  <div class="profile-main">
+    <div class="section-heading"><div><p class="eyebrow">YOUR MEMBERSHIP</p><h2>ข้อมูลสมาชิก</h2></div></div>
+    <dl class="detail-list">
+      <div><dt>ชื่อ - นามสกุล</dt><dd>{{ member.first_name }} {{ member.last_name }}</dd></div>
+      <div><dt>เบอร์โทรศัพท์</dt><dd>{{ member.phone }}</dd></div>
+      <div><dt>รหัสสมาชิก</dt><dd>{{ member.member_code }}</dd></div>
+      {% if membership %}
+        <div><dt>แพ็กเกจ</dt><dd>{{ membership.package.package_name }}</dd></div>
+        <div><dt>วันหมดอายุ</dt><dd>{{ membership.expire_date|date:'d/m/Y' }} <span class="muted">· {{ membership.get_status_display }}</span></dd></div>
+      {% else %}
+        <div><dt>แพ็กเกจ</dt><dd class="muted">ยังไม่มีข้อมูลแพ็กเกจ</dd></div>
+      {% endif %}
+    </dl>
+  </div>
+  <aside class="qr-panel">
+    <p class="eyebrow">CHECK-IN PASS</p>
+    <h2>คิวอาร์โค้ดของคุณ</h2>
+    {% if qr_image %}
+      <img class="member-qr" src="{{ qr_image }}" alt="คิวอาร์โค้ดสำหรับเช็คอิน">
+      <p class="qr-expiry">ใช้ได้ถึง {{ qr_expires_at|date:'H:i:s' }} · ใช้ได้ครั้งเดียว</p>
+    {% else %}
+      <div class="qr-placeholder"><span>QR</span></div>
+      <p class="muted">สร้างคิวอาร์โค้ดเมื่อถึงหน้าร้าน</p>
+    {% endif %}
+    <form method="post" action="{% url 'create-qr' %}">{% csrf_token %}<button class="button button-dark" type="submit">{% if qr_image %}สร้างคิวอาร์โค้ดใหม่{% else %}สร้างคิวอาร์โค้ด{% endif %} <span aria-hidden="true">↗</span></button></form>
+  </aside>
+</section>
+{% endblock %}

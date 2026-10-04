@@ -1,0 +1,9 @@
+{% extends 'myapp/base.html' %}
+{% block title %}จัดการแพ็กเกจ | Master Fitness{% endblock %}
+{% block content %}
+<p class="breadcrumb"><a href="{% url 'staff-dashboard' %}">จัดการระบบ</a><span>/</span>แพ็กเกจ</p>
+<section class="staff-heading admin-heading"><div><p class="eyebrow">PACKAGE CATALOG</p><h1>แพ็กเกจสมาชิก</h1><p class="muted">จัดการชื่อ ระยะเวลา และราคาของแพ็กเกจ</p></div><a class="button button-primary" href="{% url 'staff-package-create' %}">＋ เพิ่มแพ็กเกจ</a></section>
+<section class="detail-section package-list-panel"><div class="table-scroll"><table class="admin-table"><thead><tr><th>ชื่อแพ็กเกจ</th><th>ระยะเวลา</th><th>ราคา</th><th>สถานะ</th><th></th></tr></thead><tbody>
+{% for package in packages %}<tr><td><strong>{{ package.package_name }}</strong><small>{{ package.description|default:"ไม่มีรายละเอียด"|truncatechars:70 }}</small></td><td>{{ package.duration_days }} วัน</td><td>{{ package.price|floatformat:2 }} บาท</td><td>{% if package.is_active %}<span class="status-label status-good">เปิดขาย</span>{% else %}<span class="status-label">ปิดใช้งาน</span>{% endif %}</td><td class="table-actions"><a href="{% url 'staff-package-edit' package.pk %}">แก้ไข</a><a class="danger-link" href="{% url 'staff-package-delete' package.pk %}">ลบ</a></td></tr>{% empty %}<tr><td colspan="5" class="table-empty">ยังไม่มีแพ็กเกจ</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

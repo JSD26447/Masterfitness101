@@ -1,0 +1,10 @@
+{% extends 'myapp/base.html' %}
+{% block title %}{{ title }} | Master Fitness{% endblock %}
+{% block content %}
+<section class="delete-panel">
+  <p class="eyebrow">CONFIRM ACTION</p><h1>{{ title }}</h1>
+  <p>ยืนยันการลบ <strong>{{ object_name }}</strong> หรือไม่</p>
+  <p class="delete-warning">{{ warning }}</p>
+  <form method="post" class="admin-form-actions">{% csrf_token %}<button class="button button-danger" type="submit">ยืนยันลบ</button>{% if cancel_pk %}<a class="button button-outline" href="{% url cancel_url cancel_pk %}">กลับ</a>{% else %}<a class="button button-outline" href="{% url cancel_url %}">กลับ</a>{% endif %}</form>
+</section>
+{% endblock %}

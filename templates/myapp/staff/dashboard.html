@@ -1,0 +1,56 @@
+{% extends 'myapp/base.html' %}
+{% block title %}จัดการสมาชิก | Master Fitness{% endblock %}
+{% block content %}
+<section class="staff-heading admin-heading">
+  <div><p class="eyebrow">MASTER FITNESS · STAFF</p><h1>จัดการสมาชิก</h1><p class="muted">ค้นหาข้อมูลสมาชิก จัดการสมาชิกภาพ และบันทึกการเข้าใช้บริการ</p></div>
+  <div class="admin-actions"><a class="button button-outline" href="{% url 'scanner' %}">เปิดกล้องสแกน</a><a class="button button-primary" href="{% url 'staff-member-create' %}">＋ เพิ่มสมาชิก</a></div>
+</section>
+
+<section class="admin-stats" aria-label="สรุปข้อมูล">
+  <div class="admin-stat"><span>สมาชิกทั้งหมด</span><strong>{{ member_count }}</strong><small>รายชื่อในระบบ</small></div>
+  <div class="admin-stat"><span>สมาชิกภาพใช้งาน</span><strong>{{ active_membership_count }}</strong><small>ตามสถานะที่บันทึกไว้</small></div>
+  <div class="admin-stat admin-stat-accent"><span>เช็คอินวันนี้</span><strong>{{ today_checkin_count }}</strong><small>รายการสำเร็จ</small></div>
+</section>
+
+<section class="admin-content-grid">
+  <div class="admin-main-column">
+    <div class="admin-section-heading">
+      <div><p class="eyebrow">MEMBER DIRECTORY</p><h2>รายชื่อสมาชิก</h2></div>
+      <a class="text-link" href="{% url 'staff-packages' %}">จัดการแพ็กเกจ →</a>
+    </div>
+    <form class="member-search" method="get" role="search">
+      <label class="sr-only" for="member-query">ค้นหาสมาชิก</label>
+      <input id="member-query" name="q" value="{{ query }}" placeholder="ค้นหาชื่อ, เบอร์โทร หรือรหัสสมาชิก">
+      <button class="button button-dark" type="submit">ค้นหา</button>
+      {% if query %}<a class="clear-search" href="{% url 'staff-dashboard' %}">ล้าง</a>{% endif %}
+    </form>
+    <div class="table-scroll">
+      <table class="admin-table">
+        <thead><tr><th>สมาชิก</th><th>รหัสสมาชิก</th><th>เบอร์โทร</th><th>บัญชี</th><th></th></tr></thead>
+        <tbody>
+          {% for member in members %}
+          <tr>
+            <td><a class="member-name-link" href="{% url 'staff-member-detail' member.pk %}">{{ member.first_name }} {{ member.last_name }}</a><small>{{ member.nickname|default:"ไม่มีชื่อเล่น" }}</small></td>
+            <td>{{ member.member_code }}</td><td>{{ member.phone }}</td>
+            <td>{% if member.user and member.user.is_activated %}<span class="status-label status-good">เปิดใช้งาน</span>{% else %}<span class="status-label">ยังไม่เปิดบัญชี</span>{% endif %}</td>
+            <td><a class="row-link" href="{% url 'staff-member-detail' member.pk %}">ดูข้อมูล <span aria-hidden="true">→</span></a></td>
+          </tr>
+          {% empty %}
+          <tr><td class="table-empty" colspan="5">{% if query %}ไม่พบสมาชิกที่ตรงกับ “{{ query }}”{% else %}ยังไม่มีรายชื่อสมาชิก{% endif %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <aside class="recent-panel">
+    <div class="admin-section-heading"><div><p class="eyebrow">LIVE LOG</p><h2>เช็คอินล่าสุด</h2></div><a class="text-link" href="{% url 'display' %}">จอแสดงผล</a></div>
+    <ol class="recent-list">
+      {% for checkin in recent_checkins %}
+      <li><span class="recent-marker" aria-hidden="true"></span><div><a href="{% url 'staff-member-detail' checkin.member_id %}">{{ checkin.member.first_name }} {{ checkin.member.last_name }}</a><small>{{ checkin.member.member_code }} · {{ checkin.checkin_time|date:"H:i" }}</small></div><span class="recent-method">{% if checkin.method == "QR" %}QR{% else %}STAFF{% endif %}</span></li>
+      {% empty %}<li class="recent-empty">ยังไม่มีรายการเช็คอิน</li>{% endfor %}
+    </ol>
+    <a class="button button-outline recent-scan-link" href="{% url 'scanner' %}">ไปหน้าสแกนเช็คอิน</a>
+  </aside>
+</section>
+{% endblock %}

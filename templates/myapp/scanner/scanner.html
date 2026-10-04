@@ -1,0 +1,15 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block title %}สแกนเช็คอิน | Master Fitness{% endblock %}
+{% block head %}<script src="{% static 'myapp/vendor/jsQR.js' %}" defer></script><script src="{% static 'myapp/scanner.js' %}?v=3" defer></script>{% endblock %}
+{% block content %}
+<section class="staff-heading"><div><p class="eyebrow">STAFF CHECK-IN</p><h1>สแกนสมาชิก</h1></div><a class="button button-outline" href="{% url 'display' %}" target="_blank" rel="noopener">เปิดจอแสดงผล ↗</a></section>
+<section class="scanner-layout">
+  <div class="scanner-box">
+    <div class="scanner-frame"><video id="camera" playsinline muted></video><div class="scan-reticle" aria-hidden="true"></div><div id="camera-placeholder" class="camera-placeholder">เปิดกล้องเพื่อเริ่มสแกน</div></div>
+    <div class="scanner-controls"><button id="start-camera" class="button button-primary" type="button">เปิดกล้อง</button><p id="scan-status" class="scan-status" aria-live="polite">กดเปิดกล้องเพื่อเริ่มต้น</p></div>
+    <form id="csrf-form" hidden>{% csrf_token %}</form>
+  </div>
+  <aside class="scan-result" aria-live="polite"><p class="eyebrow">LATEST SCAN</p><h2>ผลการเช็คอิน</h2><div id="scan-result-content" class="result-empty">รอการสแกนจากสมาชิก</div></aside>
+</section>
+{% endblock %}

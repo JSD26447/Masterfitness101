@@ -1,0 +1,14 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+{% block title %}จอแสดงผลเช็คอิน | Master Fitness{% endblock %}
+{% block head %}<script src="{% static 'myapp/display.js' %}" defer></script>{% endblock %}
+{% block content %}
+<section class="display-view">
+  <div class="display-kicker"><span class="live-dot"></span> MEMBER CHECK-IN <span id="display-clock"></span></div>
+  <div id="display-content" class="display-content" aria-live="polite">
+    <p class="eyebrow">MASTER FITNESS</p>
+    <h1>พร้อมต้อนรับสมาชิก</h1>
+    <p class="muted">ข้อมูลจะแสดงเมื่อมีการสแกนเช็คอิน</p>
+  </div>
+</section>
+{% endblock %}

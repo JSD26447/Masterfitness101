@@ -1,0 +1,16 @@
+{% extends 'myapp/base.html' %}
+{% block title %}ยืนยัน OTP | Master Fitness{% endblock %}
+{% block content %}
+<section class="narrow-panel">
+  <p class="eyebrow">SECURE VERIFICATION</p>
+  <h1>ยืนยันรหัส OTP</h1>
+  <p class="muted">กรอกรหัส 6 หลักที่ได้รับ รหัสมีอายุ 5 นาที</p>
+  <form method="post" class="form-stack">
+    {% csrf_token %}
+    <label for="{{ form.code.id_for_label }}">{{ form.code.label }}</label>
+    {{ form.code }}{{ form.code.errors }}
+    <button class="button button-primary" type="submit">ยืนยันรหัส <span aria-hidden="true">→</span></button>
+  </form>
+  <p class="form-foot"><a href="{% url 'activate' %}">ขอรหัสใหม่</a></p>
+</section>
+{% endblock %}

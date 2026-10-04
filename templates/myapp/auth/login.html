@@ -1,0 +1,27 @@
+{% extends 'myapp/base.html' %}
+{% block title %}เข้าสู่ระบบ | Master Fitness{% endblock %}
+{% block content %}
+<section class="auth-layout">
+  <div class="auth-intro">
+    <p class="eyebrow">MEMBER ACCESS</p>
+    <h1>ยินดีต้อนรับ<br>กลับมา</h1>
+    <p>สมาชิกเข้าสู่ระบบด้วยเบอร์โทรศัพท์และเลขบัตรประชาชน</p>
+    <div class="intro-rule"><span></span><span></span><span></span></div>
+  </div>
+  <div class="form-panel">
+    <h2>เข้าสู่ระบบ</h2>
+    <p class="muted">แอดมินใช้ชื่อบัญชีและรหัสผ่านตามปกติ</p>
+    <form method="post" class="form-stack">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+      {{ form.phone }}{{ form.phone.errors }}
+      <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+      {{ form.password }}{{ form.password.errors }}
+      <label class="check-row">{{ form.remember_me }} <span>จดจำการเข้าสู่ระบบ</span></label>
+      <button class="button button-primary" type="submit">เข้าสู่ระบบ <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="form-foot">หากยังไม่มีข้อมูลสมาชิก กรุณาติดต่อเจ้าหน้าที่</p>
+  </div>
+</section>
+{% endblock %}

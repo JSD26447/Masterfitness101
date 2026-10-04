@@ -1,0 +1,50 @@
+{% extends 'myapp/base.html' %}
+{% block title %}{{ member.first_name }} {{ member.last_name }} | Master Fitness{% endblock %}
+{% block content %}
+<p class="breadcrumb"><a href="{% url 'staff-dashboard' %}">สมาชิก</a><span>/</span>{{ member.member_code }}</p>
+<section class="member-profile-heading">
+  <div class="member-identity">
+    {% if member.photo %}<img class="member-avatar" src="{{ member.photo.url }}" alt="รูปของ {{ member.first_name }} {{ member.last_name }}">{% else %}<div class="member-avatar avatar-placeholder" aria-hidden="true">{{ member.first_name|first }}</div>{% endif %}
+    <div><p class="eyebrow">MEMBER PROFILE · {{ member.member_code }}</p><h1>{{ member.first_name }} {{ member.last_name }}</h1><p class="muted">{% if member.nickname %}ชื่อเล่น {{ member.nickname }} · {% endif %}{{ member.phone }}</p></div>
+  </div>
+  <div class="admin-actions profile-actions">
+    <form method="post" action="{% url 'staff-member-checkin' member.pk %}">{% csrf_token %}<button class="button button-primary" type="submit">เช็คอินลูกค้า</button></form>
+    <a class="button button-outline" href="{% url 'staff-member-edit' member.pk %}">แก้ไขข้อมูล</a>
+    <a class="button button-danger-outline" href="{% url 'staff-member-delete' member.pk %}">ลบสมาชิก</a>
+  </div>
+</section>
+
+<section class="member-detail-grid">
+  <div class="detail-column">
+    <section class="detail-section">
+      <div class="admin-section-heading"><div><p class="eyebrow">PERSONAL DETAILS</p><h2>ข้อมูลส่วนตัว</h2></div></div>
+      <dl class="admin-detail-list">
+        <div><dt>รหัสสมาชิก</dt><dd>{{ member.member_code }}</dd></div>
+        <div><dt>เบอร์โทรศัพท์</dt><dd>{{ member.phone }}</dd></div>
+        <div><dt>เลขบัตรประชาชน</dt><dd>{{ national_id|default:"ยังไม่ได้บันทึก" }}</dd></div>
+        <div><dt>วันเกิด</dt><dd>{{ member.birth_date|date:"j F Y"|default:"ไม่ได้ระบุ" }}</dd></div>
+        <div><dt>เพศ</dt><dd>{{ member.gender|default:"ไม่ได้ระบุ" }}</dd></div>
+        <div><dt>LINE ID</dt><dd>{{ member.line_id|default:"ไม่ได้ระบุ" }}</dd></div>
+        <div><dt>Facebook</dt><dd>{{ member.facebook|default:"ไม่ได้ระบุ" }}</dd></div>
+        <div><dt>บัญชีสมาชิก</dt><dd>{% if member.user and member.user.is_activated %}<span class="status-label status-good">เปิดใช้งานแล้ว</span>{% else %}<span class="status-label">ยังไม่เปิดใช้งาน</span>{% endif %}</dd></div>
+      </dl>
+    </section>
+
+    <section class="detail-section">
+      <div class="admin-section-heading"><div><p class="eyebrow">MEMBERSHIPS</p><h2>สมาชิกภาพ</h2></div><a class="button button-small button-outline" href="{% url 'staff-membership-create' member.pk %}">＋ เพิ่มสมาชิกภาพ</a></div>
+      <div class="table-scroll">
+        <table class="admin-table compact-table"><thead><tr><th>แพ็กเกจ</th><th>เริ่ม</th><th>หมดอายุ</th><th>สถานะ</th><th></th></tr></thead>
+          <tbody>{% for membership in memberships %}<tr><td>{{ membership.package.package_name }}</td><td>{{ membership.start_date|date:"d/m/Y" }}</td><td>{{ membership.expire_date|date:"d/m/Y" }}</td><td>{{ membership.get_status_display }}</td><td class="table-actions"><a href="{% url 'staff-membership-edit' membership.pk %}">แก้ไข</a><a class="danger-link" href="{% url 'staff-membership-delete' membership.pk %}">ลบ</a></td></tr>{% empty %}<tr><td colspan="5" class="table-empty">ยังไม่มีสมาชิกภาพ</td></tr>{% endfor %}</tbody>
+        </table>
+      </div>
+      <p class="detail-note">วันหมดอายุแสดงตามข้อมูลที่บันทึกไว้ ยังไม่มีการคำนวณอัตโนมัติ</p>
+    </section>
+  </div>
+
+  <aside class="detail-section checkin-history">
+    <div class="admin-section-heading"><div><p class="eyebrow">VISIT HISTORY</p><h2>ประวัติเช็คอิน</h2></div><span class="history-count">{{ checkins|length }}</span></div>
+    <ol class="history-list">{% for checkin in checkins %}<li><span class="history-dot" aria-hidden="true"></span><div><strong>{{ checkin.checkin_time|date:"j M Y" }}</strong><small>{{ checkin.checkin_time|date:"H:i" }} น. · {% if checkin.method == "QR" %}สแกน QR{% else %}พนักงานบันทึก{% endif %}</small></div><span class="status-label status-good">{{ checkin.get_status_display }}</span></li>{% empty %}<li class="history-empty">ยังไม่มีประวัติเช็คอิน</li>{% endfor %}</ol>
+    {% if checkins|length == 20 %}<p class="detail-note">แสดง 20 รายการล่าสุด</p>{% endif %}
+  </aside>
+</section>
+{% endblock %}

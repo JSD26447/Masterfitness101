@@ -1,0 +1,20 @@
+{% extends 'myapp/base.html' %}
+{% block title %}{{ title }} | Master Fitness{% endblock %}
+{% block content %}
+<p class="breadcrumb"><a href="{% url 'staff-dashboard' %}">จัดการระบบ</a><span>/</span>{{ title }}</p>
+<section class="admin-form-wrap">
+  <div class="admin-form-heading"><p class="eyebrow">{{ eyebrow }}</p><h1>{{ title }}</h1><p class="muted">กรอกข้อมูลให้ครบถ้วนก่อนบันทึก</p></div>
+  <form method="post" enctype="multipart/form-data" class="admin-form">
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+    {% for field in form %}
+      <div class="admin-field{% if field.field.widget.input_type == 'checkbox' %} admin-field-checkbox{% endif %}">
+        {% if field.field.widget.input_type == 'checkbox' %}<label class="admin-check-label">{{ field }}<span>{{ field.label }}</span></label>{% else %}{{ field.label_tag }}{{ field }}{% endif %}
+        {% if field.help_text %}<small class="field-help">{{ field.help_text }}</small>{% endif %}
+        {% for error in field.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+      </div>
+    {% endfor %}
+    <div class="admin-form-actions"><button class="button button-primary" type="submit">บันทึกข้อมูล</button>{% if cancel_pk %}<a class="button button-outline" href="{% url cancel_url cancel_pk %}">ยกเลิก</a>{% else %}<a class="button button-outline" href="{% url cancel_url %}">ยกเลิก</a>{% endif %}</div>
+  </form>
+</section>
+{% endblock %}

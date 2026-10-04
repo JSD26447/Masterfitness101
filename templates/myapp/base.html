@@ -1,0 +1,32 @@
+{% load static %}
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#103f38">
+  <title>{% block title %}Master Fitness{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'myapp/app.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{% url 'home' %}"><span class="brand-mark">M</span><span>MASTER FITNESS</span></a>
+    {% if request.user.is_authenticated %}
+      <div class="topbar-actions">
+        {% if request.user.is_staff %}<a href="{% url 'staff-dashboard' %}">จัดการระบบ</a><a href="{% url 'scanner' %}">สแกนเช็คอิน</a><a href="{% url 'display' %}">จอแสดงผล</a>{% else %}<a href="{% url 'profile' %}">โปรไฟล์</a>{% endif %}
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="link-button" type="submit">ออกจากระบบ</button></form>
+      </div>
+    {% endif %}
+  </header>
+  <main class="page-shell">
+    {% if messages %}
+      <div class="messages" aria-live="polite">
+        {% for message in messages %}<p class="message message-{{ message.tags }}">{{ message }}</p>{% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+  <footer class="site-footer">MASTER FITNESS <span>MEMBER SERVICES</span></footer>
+</body>
+</html>

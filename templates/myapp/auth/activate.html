@@ -1,0 +1,16 @@
+{% extends 'myapp/base.html' %}
+{% block title %}เปิดใช้งานบัญชี | Master Fitness{% endblock %}
+{% block content %}
+<section class="narrow-panel">
+  <p class="eyebrow">FIRST TIME HERE?</p>
+  <h1>เปิดใช้งานบัญชี</h1>
+  <p class="muted">กรอกเบอร์โทรศัพท์ที่ลงทะเบียนไว้กับทางร้าน ระบบจะส่ง OTP หากพบข้อมูลสมาชิก</p>
+  <form method="post" class="form-stack">
+    {% csrf_token %}
+    <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+    {{ form.phone }}{{ form.phone.errors }}
+    <button class="button button-primary" type="submit">ขอรหัส OTP <span aria-hidden="true">→</span></button>
+  </form>
+  <p class="form-foot"><a href="{% url 'login' %}">กลับไปเข้าสู่ระบบ</a></p>
+</section>
+{% endblock %}
